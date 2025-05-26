@@ -1,0 +1,23 @@
+﻿{
+  "FileVersion": 3,
+  "FriendlyName": "Chunk Loader Plugin",
+  "VersionName": "1.0",
+  "Description": "Modular chunk loading system for UE5",
+  "Category": "World Management",
+  "CreatedBy": "walawaladar",
+  "EnabledByDefault": true,
+  "Modules": [
+    {
+      "Name": "MyChunkLoaderPlugin",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Dependencies": [
+    {"Name": "Core", "Enabled": true},
+    {"Name": "Engine", "Enabled": true},
+    {"Name": "Landscape", "Enabled": true},
+    {"Name": "HTTP", "Enabled": true},
+    {"Name": "Json", "Enabled": true}
+  ]
+}
