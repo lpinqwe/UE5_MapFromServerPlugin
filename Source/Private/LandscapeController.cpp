@@ -1,37 +1,50 @@
 #include "LandscapeController.h"
 #include "Landscape.h"
+#include "LandscapeStreamingProxy.h"
 
-// constructor
-// use: init components
+// Конструктор
 ALandscapeController::ALandscapeController()
 {
     PrimaryActorTick.bCanEverTick = false;
     UE_LOG(LogTemp, Log, TEXT("LandscapeController: Constructed"));
 }
 
-// create landscape for chunk
-// use: for creating ULandscapeComponent based on FChunkData
+// Создаёт ландшафт для чанка
 void ALandscapeController::CreateLandscapeForChunk(const FChunkData& ChunkData)
 {
     UE_LOG(LogTemp, Log, TEXT("LandscapeController: CreateLandscapeForChunk called for ChunkID (%f, %f)"), 
            ChunkData.ChunkID.X, ChunkData.ChunkID.Y);
-    // TODO: create ULandscapeComponent and import height map
+
+    // TODO: Создать ALandscape и настроить ULandscapeComponent
+    if (UWorld* World = GetWorld())
+    {
+        ALandscape* Landscape = World->SpawnActor<ALandscape>();
+        LandscapeCache.Add(ChunkData.ChunkID, Landscape);
+        UE_LOG(LogTemp, Log, TEXT("LandscapeController: Spawned ALandscape for ChunkID (%f, %f)"), 
+               ChunkData.ChunkID.X, ChunkData.ChunkID.Y);
+        // TODO: Импортировать ChunkData.Heightmap с помощью FLandscapeImportData
+    }
 }
 
-// update landscape
-// use: change map/textures
+// Обновляет ландшафт
 void ALandscapeController::UpdateLandscapeForChunk(FVector2D ChunkID, const TArray<float>& NewHeightmap)
 {
     UE_LOG(LogTemp, Log, TEXT("LandscapeController: UpdateLandscapeForChunk called for ChunkID (%f, %f)"), 
            ChunkID.X, ChunkID.Y);
-    // TODO: update ULandscapeComponent with new hegthmap
+    // TODO: Обновить высотную карту в ULandscapeComponent
 }
 
-// delete landscape
-// use: when chunk unloaded
+// Удаляет ландшафт
 void ALandscapeController::RemoveLandscapeForChunk(FVector2D ChunkID)
 {
     UE_LOG(LogTemp, Log, TEXT("LandscapeController: RemoveLandscapeForChunk called for ChunkID (%f, %f)"), 
            ChunkID.X, ChunkID.Y);
-    // TODO: delete ULandscapeComponent from LandscapeCache
+    
+    if (ALandscape** Landscape = LandscapeCache.Find(ChunkID))
+    {
+        (*Landscape)->Destroy();
+        LandscapeCache.Remove(ChunkID);
+        UE_LOG(LogTemp, Log, TEXT("LandscapeController: Removed ALandscape for ChunkID (%f, %f)"), 
+               ChunkID.X, ChunkID.Y);
+    }
 }
